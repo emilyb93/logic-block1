@@ -35,4 +35,35 @@ const sortFile = async () => {
   return brokenUpData;
 };
 
-module.exports = { formatText, sortFile };
+const calculateData = async () => {
+  const sortedDate = await sortFile();
+  const guardData = {};
+
+  let currentGuardNum = "";
+
+  let totalMinutes = 0;
+
+  let sleepTime = 0;
+
+  sortedDate.forEach((entry) => {
+    const minute = Number(entry.time.slice(3));
+    if (entry.note.includes("#")) {
+      currentGuardNum = entry.note.match(/#\d*/)[0];
+      guardData[currentGuardNum] = 0;
+    }
+
+    if (entry.note.includes("falls asleep")) {
+      sleepTime = minute;
+    }
+
+    if (entry.note.includes("wakes")) {
+      totalMinutes = minute - sleepTime;
+      guardData[currentGuardNum] += totalMinutes;
+      totalMinutes = 0;
+    }
+  });
+
+  return guardData;
+};
+
+module.exports = { formatText, sortFile, calculateData };

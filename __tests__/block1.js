@@ -1,5 +1,4 @@
-const { expect } = require("@jest/globals");
-const { formatText, sortFile } = require("../block1");
+const { formatText, sortFile, calculateData } = require("../block1");
 
 describe("formatText", () => {
   test("should format the text into an an array", async () => {
@@ -40,5 +39,15 @@ describe("sortFile", () => {
         })
       );
     });
+  });
+});
+
+describe("calculateData", () => {
+  test("should return an object with a key of each guard number and the amount of minutes they have slept in total", async () => {
+    const guardData = await calculateData();
+    console.log(guardData);
+    for (let guard in guardData) {
+      expect(typeof guardData[guard]).toBe("number");
+    }
   });
 });
