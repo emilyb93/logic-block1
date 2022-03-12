@@ -83,4 +83,63 @@ const calculateData = async () => {
   return fullData;
 };
 
-module.exports = { formatText, sortFile, calculateData };
+const findSleepiestMinute = async () => {
+  const guardData = await calculateData();
+
+  let sleepiestGuardNum = "";
+  let sleepiestMinutes = 0;
+
+  for (let guard in guardData) {
+    if (guardData[guard].total > sleepiestMinutes) {
+      sleepiestMinutes = guardData[guard].total;
+      sleepiestGuardNum = guardData[guard].guardNum;
+    }
+  }
+
+  const sleepiestGuard = guardData[sleepiestGuardNum];
+  console.log(sleepiestGuard);
+
+  const minutesCounter = {};
+
+  sleepiestGuard.sleepTuples.forEach((tuple) => {
+    const start = tuple[0];
+    const end = tuple[1];
+    for (let i = start; i < end; i++) {
+      if (!minutesCounter.hasOwnProperty(i)) {
+        minutesCounter[i] = 0;
+      }
+      minutesCounter[i]++;
+    }
+  });
+
+  const sortedTuplesArray = Object.entries(minutesCounter).sort((a, b) => {
+    if (a[1] < b[1]) {
+      return 1;
+    }
+    if (a[1] > b[1]) {
+      return -1;
+    }
+    return 0;
+  });
+
+  return {
+    guardNum: sleepiestGuardNum,
+    sleepiestMinute: Number(sortedTuplesArray[0][0]),
+  };
+};
+
+const finalAnswer = async () => {
+  const sleepiestData = await findSleepiestMinute();
+
+  return (
+    Number(sleepiestData.guardNum.slice(1)) * sleepiestData.sleepiestMinute
+  );
+};
+
+module.exports = {
+  formatText,
+  sortFile,
+  calculateData,
+  findSleepiestMinute,
+  finalAnswer,
+};
