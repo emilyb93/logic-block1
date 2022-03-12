@@ -1,3 +1,5 @@
+const { expect } = require("@jest/globals");
+const { array } = require("yargs");
 const { formatText, sortFile, calculateData } = require("../block1");
 
 describe("formatText", () => {
@@ -45,9 +47,18 @@ describe("sortFile", () => {
 describe("calculateData", () => {
   test("should return an object with a key of each guard number and the amount of minutes they have slept in total", async () => {
     const guardData = await calculateData();
-    console.log(guardData);
+
     for (let guard in guardData) {
-      expect(typeof guardData[guard]).toBe("number");
+      console.log(guardData[guard].sleepTuples);
+
+      expect(typeof guardData[guard]).toBe("object");
+      expect(guardData[guard]).toEqual(
+        expect.objectContaining({
+          guardNum: expect.any(String),
+          total: expect.any(Number),
+          sleepTuples: expect.any(Array),
+        })
+      );
     }
   });
 });

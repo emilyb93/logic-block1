@@ -37,33 +37,50 @@ const sortFile = async () => {
 
 const calculateData = async () => {
   const sortedDate = await sortFile();
-  const guardData = {};
+  const fullData = {};
+
+  let newGuardData = {};
 
   let currentGuardNum = "";
 
-  let totalMinutes = 0;
+  let tempTotal = 0;
 
-  let sleepTime = 0;
+  let tempSleepTime = 0;
+
+  let tempSleepTuples = [];
 
   sortedDate.forEach((entry) => {
     const minute = Number(entry.time.slice(3));
     if (entry.note.includes("#")) {
       currentGuardNum = entry.note.match(/#\d*/)[0];
-      guardData[currentGuardNum] = 0;
+
+      if (!fullData.hasOwnProperty(currentGuardNum)) {
+        fullData[currentGuardNum] = {
+          guardNum: currentGuardNum,
+          total: 0,
+          sleepTuples: [],
+        };
+      }
     }
 
     if (entry.note.includes("falls asleep")) {
-      sleepTime = minute;
+      tempSleepTime = minute;
+      tempSleepTuples.push(minute);
     }
 
     if (entry.note.includes("wakes")) {
-      totalMinutes = minute - sleepTime;
-      guardData[currentGuardNum] += totalMinutes;
-      totalMinutes = 0;
+      tempTotal = minute - tempSleepTime;
+      fullData[currentGuardNum].total += tempTotal;
+
+      tempSleepTuples.push(minute);
+      fullData[currentGuardNum].sleepTuples.push(tempSleepTuples);
+
+      tempSleepTuples = [];
+      tempTotal = 0;
     }
   });
 
-  return guardData;
+  return fullData;
 };
 
 module.exports = { formatText, sortFile, calculateData };
