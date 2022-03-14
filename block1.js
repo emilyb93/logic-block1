@@ -134,10 +134,61 @@ const finalAnswer = async () => {
   );
 };
 
+const findSleepiestOverallMinute = async () => {
+  const fullData = await calculateData();
+
+  for (let guard in fullData) {
+    const minuteCounter = {};
+
+    fullData[guard].sleepTuples.forEach((sleepTuple) => {
+      const start = sleepTuple[0];
+      const end = sleepTuple[1];
+      for (let i = start; i < end; i++) {
+        if (!minuteCounter.hasOwnProperty(i)) {
+          minuteCounter[i] = 0;
+        }
+
+        minuteCounter[i]++;
+      }
+    });
+
+    fullData[guard].minuteCounter = minuteCounter;
+  }
+
+  let currentGuardNum = "";
+  let sleepiestMinute = 0;
+  let sleepiestMinuteLabel = "";
+
+  for (let guard in fullData) {
+    const minuteTuples = Object.entries(fullData[guard].minuteCounter);
+
+    minuteTuples.forEach((minuteTuple) => {
+      if (minuteTuple[1] > sleepiestMinute) {
+        sleepiestMinute = minuteTuple[1];
+        sleepiestMinuteLabel = minuteTuple[0];
+        currentGuardNum = fullData[guard].guardNum;
+      }
+    });
+  }
+
+  return {
+    ...fullData[currentGuardNum],
+    sleepiestOverallMinute: Number(sleepiestMinuteLabel),
+  };
+};
+
+const strat2Answer = async () => {
+  const guardData = await findSleepiestOverallMinute();
+
+  return Number(guardData.guardNum.slice(1)) * guardData.sleepiestOverallMinute;
+};
+
 module.exports = {
   formatText,
   sortFile,
   calculateData,
   findSleepiestMinute,
   finalAnswer,
+  findSleepiestOverallMinute,
+  strat2Answer,
 };

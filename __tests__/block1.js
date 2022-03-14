@@ -5,6 +5,8 @@ const {
   calculateData,
   findSleepiestMinute,
   finalAnswer,
+  findSleepiestOverallMinute,
+  strat2Answer,
 } = require("../block1");
 
 describe("formatText", () => {
@@ -69,7 +71,6 @@ describe("calculateData", () => {
 describe("findSleepiestMinute", () => {
   test("find the sleepiest minute of the sleepiest guard ", async () => {
     const sleepiestData = await findSleepiestMinute();
-    console.log(sleepiestData);
     expect(sleepiestData).toEqual(
       expect.objectContaining({
         guardNum: expect.any(String),
@@ -80,7 +81,32 @@ describe("findSleepiestMinute", () => {
 });
 
 describe("finalAnswer", () => {
-  test("should return the final answer of the puzzle 19830", async () => {
-    expect(await finalAnswer()).toEqual(19830);
+  test("should return the final answer of the puzzle as a number", async () => {
+    expect(typeof (await finalAnswer())).toBe("number");
+  });
+});
+
+describe("findSleepiestOverallMinute", () => {
+  test("should return the guard data with the sleepiest overall minute", async () => {
+    const data = await findSleepiestOverallMinute();
+
+    expect(data).toEqual(
+      expect.objectContaining({
+        guardNum: expect.any(String),
+        total: expect.any(Number),
+        sleepTuples: expect.any(Array),
+        sleepiestOverallMinute: expect.any(Number),
+      })
+    );
+  });
+});
+
+describe("strat2Answer", () => {
+  test("should return the answer for strategy 2 of the sleepiest overall minute * the guard number of that minute", async () => {
+    const answer = await strat2Answer();
+
+    expect(typeof answer).toBe("number");
+
+    console.log(answer);
   });
 });
