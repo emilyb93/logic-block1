@@ -4,8 +4,8 @@ const fs = require("fs/promises");
 
 const formatText = async () => {
   const fileInput = await fs.readFile("./input.txt", "utf8");
-  //   console.log(fileInput);
   const fileInputArray = fileInput.split("\n");
+
   const splitArray = fileInputArray.map((entry) => {
     const stringEntry = entry.split(/(?<=])/);
     return { dateTime: stringEntry[0], note: stringEntry[1] };
@@ -38,8 +38,6 @@ const sortFile = async () => {
 const calculateData = async () => {
   const sortedDate = await sortFile();
   const fullData = {};
-
-  let newGuardData = {};
 
   let currentGuardNum = "";
 
